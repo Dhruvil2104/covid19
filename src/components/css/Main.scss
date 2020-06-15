@@ -1,7 +1,38 @@
+.success {
+  color: #28a745;
+}
+.danger {
+  color: #dc3545;
+}
+.warning {
+  color: #ffc107;
+}
+.primary {
+  color: #007bff;
+}
 .gm-style-iw.gm-style-iw-c {
   padding: 0;
-  //   min-width: 200px;
-  //   width: 200px;
+}
+
+.spinner-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .fa-spin {
+    font-size: 3em;
+    color: #17a2b7;
+  }
+}
+
+.chart-wrapper {
+  margin-top: 30px;
+
+  .recharts-wrapper {
+    margin: 0 auto;
+    padding-bottom: 20px;
+  }
 }
 
 .tooltip-wrapper {
@@ -16,6 +47,7 @@
     opacity: 0.15;
   }
   .tooltip-table {
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
   }
 }

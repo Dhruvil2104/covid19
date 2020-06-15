@@ -24,12 +24,15 @@ import {
   Legend,
   Line,
 } from "recharts";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 const Main = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
   const [data2, setData2] = useState(null);
 
   useEffect(() => {
+    // API for fetching countries data
     const getData = async () => {
       try {
         const response = await fetch("https://corona.lmao.ninja/v2/countries");
@@ -41,6 +44,7 @@ const Main = () => {
       }
     };
 
+    // API for fetching US state data
     const getData2 = async () => {
       try {
         const response = await fetch(
@@ -58,6 +62,9 @@ const Main = () => {
     getData2();
   }, []);
 
+  // -------------------------------------------------------
+  // ------------------MAP COMPONENT------------------------
+  // -------------------------------------------------------
   const Map = () => {
     const [currentCountry, setCurrentCountry] = useState(null);
 
@@ -77,6 +84,7 @@ const Main = () => {
               currRecovered,
               currCountry,
               currDeaths;
+
             if (currentCountry) {
               ({
                 cases: currCases,
@@ -106,7 +114,7 @@ const Main = () => {
                     }}
                   >
                     <div className="tooltip-wrapper">
-                      <h3>
+                      <h2>
                         {currCountry}
                         <Image
                           className="flag-img"
@@ -114,24 +122,24 @@ const Main = () => {
                           height="20px"
                           width="30px"
                         />
-                      </h3>
+                      </h2>
                       <Table className="tooltip-table" striped bordered>
                         <tbody>
                           <tr>
                             <th>Total Cases:</th>
-                            <td>{currCases}</td>
+                            <td className="primary">{currCases}</td>
                           </tr>
                           <tr>
                             <th>Active:</th>
-                            <td>{currActive}</td>
+                            <td className="warning">{currActive}</td>
                           </tr>
                           <tr>
                             <th>Deaths:</th>
-                            <td>{currDeaths}</td>
+                            <td className="danger">{currDeaths}</td>
                           </tr>
                           <tr>
                             <th>Recovered:</th>
-                            <td>{currRecovered}</td>
+                            <td className="success">{currRecovered}</td>
                           </tr>
                         </tbody>
                       </Table>
@@ -152,92 +160,108 @@ const Main = () => {
   // -------------------------------------------------------
 
   const ChartWrapper = ({ data2 }) => {
-    const [state, setState] = useState("Alabama");
-    const [stateLen, setStateLen] = useState(0);
-    const [states, setStates] = useState(null);
-    const [maxYAxis, setMaxYAxis] = useState(0);
-
-    // setState("Massachusetts");
-
-    // useEffect(() => {
-    //   console.log("data2: ", data2);
-    // }, [data2]);
-
-    // useEffect(() => {
-    //   if (data2 && state && stateLen) {
-    //     console.log("state ", state);
-
-    //     // console.log("data2: ", Object.keys(data2));
-    //     // console.log("data2[state] ", data2[state]);
-    //     // console.log("cases ", data2[state][stateLen - 1].confirmed);
-    //   }
-    // }, [data2, state, stateLen]);
+    const [state, setState] = useState("Alabama"); // dropdown selected state name
+    const [stateObj, setStateObj] = useState(null); // dropdown selected state array
+    const [stateLen, setStateLen] = useState(0); // state array length
+    const [states, setStates] = useState(null); // array of US states
+    const [maxYAxis, setMaxYAxis] = useState(0); // maximum cases for selecteds state
 
     useEffect(() => {
       if (data2) setStates(Object.keys(data2));
     }, [data2]);
 
+    // useEffect(() => {
+    //   console.log("state:", state);
+    // }, [state]);
+
     useEffect(() => {
-      if (data2[state]) setStateLen(data2[state].length);
-      else console.log("No data2!");
+      setStateObj(data2[state]);
     }, [state, data2]);
 
-    useEffect(() => {
-      console.log("state:", state);
-    }, [state]);
+    // useEffect(() => {
+    //   console.log("stateObj:", stateObj);
+    // }, [stateObj]);
 
     useEffect(() => {
-      console.log("stateLen:", stateLen);
-      if (data2 && state && stateLen)
-        setMaxYAxis(parseInt(data2[state][stateLen - 1]["confirmed"]));
-    }, [data2, state, stateLen]);
+      if (data2[state]) setStateLen(data2[state].length);
+      else console.log("Not set data2!");
+    }, [state, data2]);
 
-    return state && stateLen && states ? (
-      <>
-        <LineChart
-          className="line-chart"
-          width={730}
-          height={300}
-          data={data2[state]}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis type="number" domain={[0, maxYAxis]} />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="deaths" stroke="#82ca9d" />
-          <Line type="monotone" dataKey="confirmed" stroke="#8884d8" />
-        </LineChart>
-        <Form>
-          <FormGroup controlId="states-select">
-            <FormLabel>Selected State: </FormLabel>
-            <FormControl as="select" onChange={(e) => setState(e.target.value)}>
-              {states.map((item, i) => (
-                <option value={item} key={i}>
-                  {item}
-                </option>
-              ))}
-            </FormControl>
-          </FormGroup>
-        </Form>
-      </>
-    ) : null;
+    // useEffect(() => {
+    //   console.log("stateLen:", stateLen);
+    // }, [stateLen]);
+
+    // useEffect(() => {
+    //   console.log("maxYAxis:", maxYAxis);
+    // }, [maxYAxis]);
+
+    useEffect(() => {
+      if (data2 && stateLen)
+        setMaxYAxis(parseInt(stateObj[stateLen - 1]["confirmed"]));
+      else console.log("Not set maxYAxis!");
+    }, [stateObj, stateLen, data2]);
+
+    return (
+      state &&
+      stateLen &&
+      states && (
+        <div className="chart-wrapper">
+          <LineChart
+            className="line-chart"
+            width={730}
+            height={250}
+            data={data2[state]}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis type="number" domain={[0, maxYAxis]} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="deaths" stroke="#82ca9d" />
+            <Line type="monotone" dataKey="confirmed" stroke="#8884d8" />
+          </LineChart>
+          <Form>
+            <FormGroup controlId="states-select">
+              <FormLabel>Selected State: </FormLabel>
+              <FormControl
+                as="select"
+                onChange={(e) => setState(e.target.value)}
+              >
+                {states.map((item, i) => (
+                  <option value={item} key={i}>
+                    {item}
+                  </option>
+                ))}
+              </FormControl>
+            </FormGroup>
+          </Form>
+        </div>
+      )
+    );
   };
 
   return (
     <>
-      <div style={{ height: "50vh", width: "100vw" }}>
-        {data && (
-          <MapWrapper
-            googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
-            loadingElement={<div style={{ height: `100%` }} />}
-            containerElement={<div style={{ height: `100%` }} />}
-            mapElement={<div style={{ height: `100%` }} />}
-          />
-        )}
-      </div>
-      {data2 && <ChartWrapper data2={data2} />}
+      {data && data2 ? (
+        <div>
+          {data && (
+            <div style={{ height: "50vh", width: "100vw" }}>
+              <MapWrapper
+                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
+                loadingElement={<div style={{ height: `100%` }} />}
+                containerElement={<div style={{ height: `100%` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
+              />
+            </div>
+          )}
+          {data2 && <ChartWrapper data2={data2} />}
+        </div>
+      ) : (
+        <div className="spinner-wrapper d-flex align-items-center">
+          <FontAwesomeIcon icon={faCircleNotch} spin />
+        </div>
+      )}
     </>
   );
 };
