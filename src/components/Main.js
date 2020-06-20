@@ -270,6 +270,7 @@ const Main = () => {
   };
 
   console.log("tableData", tableData("state", "State"));
+  console.log("pro", tableData("state", "State"));
 
   return (
     <>
@@ -291,7 +292,10 @@ const Main = () => {
                 </h2>
                 <div style={{ height: "70vh", width: "100%" }}>
                   <MapWrapper
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${
+                      process.env.REACT_APP_GOOGLE_KEY ||
+                      "AIzaSyABhOipwPM66s6JgjqEQgIhYV_LBRXNBRg"
+                    }`}
                     loadingElement={<div style={{ height: `100%` }} />}
                     containerElement={<div style={{ height: `100%` }} />}
                     mapElement={<div style={{ height: `100%` }} />}
