@@ -25,11 +25,18 @@ import {
   Line,
 } from "recharts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleNotch,
+  faAngleDoubleDown,
+} from "@fortawesome/free-solid-svg-icons";
+import { Col, Row, Container } from "react-bootstrap";
+import TableReport from "./TableReport";
+import { tableData } from "../utils";
 
 const Main = () => {
   const [data, setData] = useState();
   const [data2, setData2] = useState(null);
+  const [data3, setData3] = useState(null);
 
   useEffect(() => {
     // API for fetching countries data
@@ -37,14 +44,14 @@ const Main = () => {
       try {
         const response = await fetch("https://corona.lmao.ninja/v2/countries");
         const json = await response.json();
-        // console.log("json: ", json);
+        console.log("json: ", json);
         setData(json);
       } catch (e) {
         console.log("error: ", e);
       }
     };
 
-    // API for fetching US state data
+    // API for fetching US states daily cases data
     const getData2 = async () => {
       try {
         const response = await fetch(
@@ -58,8 +65,21 @@ const Main = () => {
       }
     };
 
+    // API for fetching US states detailed cases data
+    const getData3 = async () => {
+      try {
+        const response = await fetch("https://corona.lmao.ninja/v2/states");
+        const json = await response.json();
+        console.log("json: ", json);
+        setData3(json);
+      } catch (e) {
+        console.log("error: ", e);
+      }
+    };
+
     getData();
     getData2();
+    getData3();
   }, []);
 
   // -------------------------------------------------------
@@ -114,16 +134,14 @@ const Main = () => {
                     }}
                   >
                     <div className="tooltip-wrapper">
-                      <h2>
-                        {currCountry}
-                        <Image
-                          className="flag-img"
-                          src={currFlag}
-                          height="20px"
-                          width="30px"
-                        />
-                      </h2>
-                      <Table className="tooltip-table" striped bordered>
+                      <h3>{currCountry}</h3>
+                      <Image
+                        className="flag-img"
+                        src={currFlag}
+                        height="20px"
+                        width="30px"
+                      />
+                      <Table className="tooltip-table">
                         <tbody>
                           <tr>
                             <th>Total Cases:</th>
@@ -168,6 +186,12 @@ const Main = () => {
 
     useEffect(() => {
       if (data2) setStates(Object.keys(data2));
+
+      // if (data2) {
+      //   let statesArr = [];
+      //   data2.forEach((item) => statesArr.push(item.state));
+      //   setStates(statesArr.sort);
+      // }
     }, [data2]);
 
     // useEffect(() => {
@@ -208,8 +232,8 @@ const Main = () => {
         <div className="chart-wrapper">
           <LineChart
             className="line-chart"
-            width={730}
-            height={250}
+            width={1110}
+            height={500}
             data={data2[state]}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
@@ -221,19 +245,23 @@ const Main = () => {
             <Line type="monotone" dataKey="deaths" stroke="#82ca9d" />
             <Line type="monotone" dataKey="confirmed" stroke="#8884d8" />
           </LineChart>
-          <Form>
-            <FormGroup controlId="states-select">
-              <FormLabel>Selected State: </FormLabel>
-              <FormControl
-                as="select"
-                onChange={(e) => setState(e.target.value)}
-              >
-                {states.map((item, i) => (
-                  <option value={item} key={i}>
-                    {item}
-                  </option>
-                ))}
-              </FormControl>
+          <Form className="form-chart">
+            <FormGroup controlId="states-select" as={Row}>
+              <FormLabel column sm={5}>
+                Selected State:{" "}
+              </FormLabel>
+              <Col sm={7}>
+                <FormControl
+                  as="select"
+                  onChange={(e) => setState(e.target.value)}
+                >
+                  {states.map((item, i) => (
+                    <option value={item} key={i}>
+                      {item}
+                    </option>
+                  ))}
+                </FormControl>
+              </Col>
             </FormGroup>
           </Form>
         </div>
@@ -241,21 +269,67 @@ const Main = () => {
     );
   };
 
+  console.log("tableData", tableData("state", "State"));
+
   return (
     <>
       {data && data2 ? (
-        <div>
-          {data && (
-            <div style={{ height: "50vh", width: "100vw" }}>
-              <MapWrapper
-                googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
-                loadingElement={<div style={{ height: `100%` }} />}
-                containerElement={<div style={{ height: `100%` }} />}
-                mapElement={<div style={{ height: `100%` }} />}
+        <div id="main-wrapper ">
+          <section className="title-wrapper d-flex align-items-center justify-content-center">
+            <h1 className="title">
+              <span className="title-badge">COVID-19 CORONAVIRUS PANDEMIC</span>
+            </h1>
+            <a href="#map-title" className="scroll-down">
+              <FontAwesomeIcon icon={faAngleDoubleDown} />
+            </a>
+          </section>
+          <Container>
+            {data && (
+              <section id="map-wrapper" className="section-wrapper">
+                <h2 className="title" id="map-title">
+                  1. COVID19 Countries Report
+                </h2>
+                <div style={{ height: "70vh", width: "100%" }}>
+                  <MapWrapper
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
+                    loadingElement={<div style={{ height: `100%` }} />}
+                    containerElement={<div style={{ height: `100%` }} />}
+                    mapElement={<div style={{ height: `100%` }} />}
+                  />
+                </div>
+                <em>
+                  <b>Note: </b>
+                  Please click on any marker to see cases info for that country
+                </em>
+              </section>
+            )}
+            {data2 && (
+              <section id="chart-wrapper" className="section-wrapper">
+                <h2 className="title">2. COVID19 US States Reports</h2>
+                <ChartWrapper data2={data2} />
+              </section>
+            )}
+            {data && (
+              <TableReport
+                data={data}
+                columns={tableData("country", "Country")}
+                title="Countries"
+                srNo="3"
               />
-            </div>
-          )}
-          {data2 && <ChartWrapper data2={data2} />}
+            )}
+            {data3 && (
+              <TableReport
+                data={data3}
+                columns={tableData("state", "State").filter(
+                  (item) =>
+                    item.accessor !== "recovered" &&
+                    item.accessor !== "todayRecovered"
+                )}
+                title="US States"
+                srNo="4"
+              />
+            )}
+          </Container>
         </div>
       ) : (
         <div className="spinner-wrapper d-flex align-items-center">
