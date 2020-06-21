@@ -37,6 +37,7 @@ const Main = () => {
   const [data, setData] = useState();
   const [data2, setData2] = useState(null);
   const [data3, setData3] = useState(null);
+  const [key, setKey] = useState(null);
 
   useEffect(() => {
     // API for fetching countries data
@@ -76,6 +77,19 @@ const Main = () => {
         console.log("error: ", e);
       }
     };
+
+    // API for fetching Google map API key from server
+    const getKey = async () => {
+      const response = await fetch("/get-key");
+      const json = await response.json();
+      if (!response.ok || !json) {
+        alert("Internal Server Error");
+      } else {
+        setKey(json.key);
+      }
+    };
+
+    getKey();
 
     getData();
     getData2();
@@ -292,10 +306,7 @@ const Main = () => {
                 </h2>
                 <div style={{ height: "70vh", width: "100%" }}>
                   <MapWrapper
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${
-                      process.env.REACT_APP_GOOGLE_KEY ||
-                      "AIzaSyABhOipwPM66s6JgjqEQgIhYV_LBRXNBRg"
-                    }`}
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${key}`}
                     loadingElement={<div style={{ height: `100%` }} />}
                     containerElement={<div style={{ height: `100%` }} />}
                     mapElement={<div style={{ height: `100%` }} />}
