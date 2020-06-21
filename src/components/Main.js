@@ -105,7 +105,7 @@ const Main = () => {
     return (
       <GoogleMap defaultCenter={{ lat: 38, lng: -97 }} defaultZoom={3}>
         {data
-          .filter(({ countryInfo: { _id } }) => _id)
+          .filter(({ countryInfo: { _id } }) => _id) // filtering those with falsy id values
           .map((item, i) => {
             const {
               countryInfo: { lat, long: lng, _id },
@@ -200,12 +200,6 @@ const Main = () => {
 
     useEffect(() => {
       if (data2) setStates(Object.keys(data2));
-
-      // if (data2) {
-      //   let statesArr = [];
-      //   data2.forEach((item) => statesArr.push(item.state));
-      //   setStates(statesArr.sort);
-      // }
     }, [data2]);
 
     // useEffect(() => {
@@ -283,12 +277,9 @@ const Main = () => {
     );
   };
 
-  console.log("tableData", tableData("state", "State"));
-  console.log("pro", tableData("state", "State"));
-
   return (
     <>
-      {data && data2 ? (
+      {data && data2 && data3 && key ? (
         <div id="main-wrapper ">
           <section className="title-wrapper d-flex align-items-center justify-content-center">
             <h1 className="title">
@@ -302,7 +293,7 @@ const Main = () => {
             {data && (
               <section id="map-wrapper" className="section-wrapper">
                 <h2 className="title" id="map-title">
-                  1. COVID19 Countries Report
+                  1. Countries Report
                 </h2>
                 <div style={{ height: "70vh", width: "100%" }}>
                   <MapWrapper
@@ -320,7 +311,7 @@ const Main = () => {
             )}
             {data2 && (
               <section id="chart-wrapper" className="section-wrapper">
-                <h2 className="title">2. COVID19 US States Reports</h2>
+                <h2 className="title">2. US States Report</h2>
                 <ChartWrapper data2={data2} />
               </section>
             )}
@@ -328,7 +319,7 @@ const Main = () => {
               <TableReport
                 data={data}
                 columns={tableData("country", "Country")}
-                title="Countries"
+                title="Countries Table Report"
                 srNo="3"
               />
             )}
@@ -340,7 +331,7 @@ const Main = () => {
                     item.accessor !== "recovered" &&
                     item.accessor !== "todayRecovered"
                 )}
-                title="US States"
+                title="US States Table Report"
                 srNo="4"
               />
             )}

@@ -2,7 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
 
-// Table Data for Countries Report
+// Table Data for Countries and US States Report
 export const tableData = (type, header) => {
   return [
     {

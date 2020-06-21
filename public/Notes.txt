@@ -1,1 +1,3 @@
 Heroku CLI commands - https://dashboard.heroku.com/apps/covid19-web-app/deploy/heroku-git
+Google Cloud Platform (API key) - dhruvil21042020@gmail.com 
+    - Restrict API keys here
