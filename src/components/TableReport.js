@@ -6,7 +6,7 @@ const TableReport = ({ data, columns, title, srNo }) => {
   return (
     <section className="section-wrapper" id={title}>
       <h2 className="title">
-        {srNo}. {title} Report
+        {srNo}. {title}
       </h2>
       <ReactTable
         data={data}
