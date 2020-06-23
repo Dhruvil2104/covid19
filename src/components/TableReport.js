@@ -13,9 +13,9 @@ const TableReport = ({ data, columns, title, srNo }) => {
         columns={columns}
         defaultPageSize={20}
         // showPagination={false}
-        style={{
-          height: "600px", // This will force the table body to overflow and scroll, since there is not enough room
-        }}
+        // style={{
+        //   height: "600px", // This will force the table body to overflow and scroll, since there is not enough room
+        // }}
         className="-striped -highlight"
       />
     </section>
