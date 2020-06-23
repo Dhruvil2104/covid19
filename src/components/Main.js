@@ -309,19 +309,19 @@ const Main = () => {
                 </em>
               </section>
             )}
-            {data2 && (
-              <section id="chart-wrapper" className="section-wrapper">
-                <h2 className="title">2. US States Report</h2>
-                <ChartWrapper data2={data2} />
-              </section>
-            )}
             {data && (
               <TableReport
                 data={data}
                 columns={tableData("country", "Country")}
                 title="Countries Table Report"
-                srNo="3"
+                srNo="2"
               />
+            )}
+            {data2 && (
+              <section id="chart-wrapper" className="section-wrapper">
+                <h2 className="title">3. US States Report</h2>
+                <ChartWrapper data2={data2} />
+              </section>
             )}
             {data3 && (
               <TableReport

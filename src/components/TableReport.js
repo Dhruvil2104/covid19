@@ -12,6 +12,7 @@ const TableReport = ({ data, columns, title, srNo }) => {
         data={data}
         columns={columns}
         defaultPageSize={20}
+        showPagination={false}
         style={{
           height: "600px", // This will force the table body to overflow and scroll, since there is not enough room
         }}
